@@ -56,17 +56,17 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
 
 				<CardContent>
 					<div className='flex items-center gap-2'>
-						{currentInstance.owner.avatarUrl && (
+						{currentInstance.instance.avatarUrl && (
 							<Image
-								src={currentInstance.owner.avatarUrl}
-								alt={currentInstance.owner.name}
+								src={currentInstance.instance.avatarUrl}
+								alt={currentInstance.instance.name}
 								width={32}
 								height={32}
 								className='rounded-full'
 							/>
 						)}
 						<span className='text-sm text-gray-700'>
-							Owner: {currentInstance.owner.name}
+							Owner: {currentInstance.instance.name}
 						</span>
 					</div>
 				</CardContent>
