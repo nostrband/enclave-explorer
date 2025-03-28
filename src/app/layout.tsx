@@ -24,7 +24,7 @@ export default function RootLayout({
 		<html lang='en' className={`${inter.variable} antialiased h-full`}>
 			<body className='flex flex-col h-full w-full'>
 				<Header />
-				<main className='w-full'>{children}</main>
+				<main className='w-full h-full'>{children}</main>
 			</body>
 		</html>
 	)
