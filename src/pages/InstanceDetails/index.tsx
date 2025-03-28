@@ -6,19 +6,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
-import { instances } from '../Instances/const'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { fetchInstances } from '@/lib/nostr'
+import Image from 'next/image'
 import { format } from 'date-fns'
+import { getNeventLink, getNpubLink } from '@/utils/helpers'
 
 type Props = {
 	id: string
 }
 
-const InstanceDetailsPage: FC<Props> = ({ id }) => {
-	const currentInstance = instances.find((i) => i.id === id)
+const InstanceDetailsPage: FC<Props> = async ({ id }) => {
+	const instances = await fetchInstances()
+	const currentInstance = instances.find((i) => i.event.id === id)
 
 	if (!currentInstance)
 		return (
@@ -32,10 +34,13 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
 			</div>
 		)
 
-	const createdAt = format(
-		currentInstance.build.createdAt,
-		'yyyy/MM/dd, hh:mm:ss a',
-	)
+	const { instance, build, sourceRef = '' } = currentInstance || {}
+	const { launcher, event } = instance || {}
+	const { builder, event: buildEvent } = build || {}
+
+	const buildCreatedAt = buildEvent?.created_at
+		? format(buildEvent.created_at * 1000, 'yyyy/MM/dd, hh:mm:ss a')
+		: ''
 
 	return (
 		<div className='container mx-auto px-4 py-6 flex flex-col gap-6'>
@@ -46,7 +51,37 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
 					</CardTitle>
 					<CardDescription>
 						<div className='flex flex-col gap-2'>
-							<p>ID: {currentInstance.id}</p>
+							<p className='break-all'>
+								ID: {currentInstance.event.id}
+							</p>
+							<p className='break-all'>
+								PUBKEY:{' '}
+								{event && (
+									<a
+										href={getNeventLink(event)}
+										className='inline-block hover:underline hover:text-blue-500'
+										target='_blank'
+										rel='noopener noreferrer'
+									>
+										{currentInstance.event.pubkey}
+									</a>
+								)}
+								{!event && currentInstance.event.pubkey}
+							</p>
+							{sourceRef && (
+								<p className='break-all'>
+									Source code:{' '}
+									<a
+										href={sourceRef}
+										className='hover:underline hover:text-blue-500'
+										target='_blank'
+										rel='noopener noreferrer'
+									>
+										{' '}
+										{sourceRef}
+									</a>
+								</p>
+							)}
 							<Badge variant={'outline'}>
 								Version: {currentInstance.version}
 							</Badge>
@@ -54,22 +89,29 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
 					</CardDescription>
 				</CardHeader>
 
-				<CardContent>
-					<div className='flex items-center gap-2'>
-						{currentInstance.instance.avatarUrl && (
-							<Image
-								src={currentInstance.instance.avatarUrl}
-								alt={currentInstance.instance.name}
-								width={32}
-								height={32}
-								className='rounded-full'
-							/>
-						)}
-						<span className='text-sm text-gray-700'>
-							Owner: {currentInstance.instance.name}
-						</span>
-					</div>
-				</CardContent>
+				{launcher && event && (
+					<CardContent>
+						<div className='flex flex-col gap-2'>
+							<span>Launched by:</span>
+
+							<a
+								href={getNpubLink(event)}
+								className='flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500'
+								target='_blank'
+								rel='noopener noreferrer'
+							>
+								<Image
+									src={launcher.picture}
+									alt={launcher.name}
+									width={32}
+									height={32}
+									className='rounded-full'
+								/>
+								<span className='text-sm'>{launcher.name}</span>
+							</a>
+						</div>
+					</CardContent>
+				)}
 			</Card>
 
 			<Card>
@@ -80,8 +122,32 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<p>Commit hash: {currentInstance.build.commitHash}</p>
-					<p>Created at: {createdAt}</p>
+					<div className='flex flex-col gap-2'>
+						{buildCreatedAt && <p>Created at: {buildCreatedAt}</p>}
+						{builder && buildEvent && (
+							<div className='flex flex-col gap-2'>
+								<span>Build by:</span>
+
+								<a
+									href={getNpubLink(buildEvent)}
+									className='flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500'
+									target='_blank'
+									rel='noopener noreferrer'
+								>
+									<Image
+										src={builder.picture}
+										alt={builder.name}
+										width={32}
+										height={32}
+										className='rounded-full'
+									/>
+									<span className='text-sm'>
+										{builder.name}
+									</span>
+								</a>
+							</div>
+						)}
+					</div>
 				</CardContent>
 			</Card>
 

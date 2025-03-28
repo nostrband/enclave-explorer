@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import InstanceDetailsPage from '@/pages/InstanceDetails'
+import LoadingSpinner from '@/components/LoadingSpinner'
 
 type PageProps = {
 	params: Promise<{ id: string }>
@@ -7,5 +8,9 @@ type PageProps = {
 
 export default async function InstanceDetails({ params }: PageProps) {
 	const { id = '' } = await params
-	return <InstanceDetailsPage id={id} />
+	return (
+		<Suspense fallback={<LoadingSpinner />}>
+			<InstanceDetailsPage id={id} />
+		</Suspense>
+	)
 }
