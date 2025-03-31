@@ -21,7 +21,7 @@
     "date-fns": "^4.1.0",
     "lucide-react": "^0.484.0",
     "next": "15.2.4",
-    "nostr-enclaves": "^1.0.0",
+    "nostr-enclaves": "^1.0.1",
     "nostr-tools": "^2.11.0",
     "postcss": "^8.5.3",
     "react": "^18.3.1",
