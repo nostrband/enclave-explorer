@@ -2,35 +2,89 @@ import React, { FC } from 'react'
 import { Instance } from '../types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import InstanceCardWrapper from './InstanceCardWrapper'
+import { getNeventLink, getNpubLink } from '@/utils/helpers'
 
-type Props = {
-	instance: Instance
-}
+type Props = Instance
 
-const InstanceCard: FC<Props> = ({ instance }) => {
+const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
+	const { launcher, event: launchEvent } = instance || {}
+	const { builder, event: buildEvent } = build || {}
+
 	return (
-		<div className='p-4 border rounded-xl hover:bg-gray-100 flex gap-3.5 items-center'>
-			{/* <div className='flex flex-col gap-2 items-center flex-1/12'>
-				<Avatar className='h-12 w-12 rounded-lg grayscale'>
-					<AvatarImage
-						src={instance.instance.avatarUrl}
-						alt={instance.instance.name}
-					/>
-					<AvatarFallback className='rounded-lg'>
-						{instance.instance.name?.substring(0, 1)}
-					</AvatarFallback>
-				</Avatar>
-				<p className='font-medium text-center'>{instance.instance.name}</p>
-			</div> */}
-
+		<InstanceCardWrapper instanceId={event.id}>
 			<div className='flex flex-col gap-1 flex-11/12'>
-				<h3 className='text-lg font-bold'>{instance.name}</h3>
-				<p className='text-muted-foreground text-sm'>
-					PUBKEY: {instance.event.pubkey}
+				<div className='flex gap-2 items-center'>
+					<h3 className='text-lg font-bold'>{name}</h3>
+					<Badge variant={'outline'}>Version: {version}</Badge>
+				</div>
+
+				<p className='text-muted-foreground text-sm break-words'>
+					PUBKEY:{' '}
+					<a
+						href={getNeventLink(event)}
+						className='inline-block hover:underline hover:text-blue-500'
+						target='_blank'
+						rel='noopener noreferrer'
+					>
+						{event.pubkey}
+					</a>
 				</p>
-				<Badge variant={'outline'}>Version: {instance.version}</Badge>
 			</div>
-		</div>
+
+			<div className='flex flex-wrap gap-6'>
+				{builder && buildEvent && (
+					<div className='flex flex-col gap-2'>
+						<span className='text-xs font-semibold uppercase'>
+							Build by:
+						</span>
+						<a
+							href={getNpubLink(buildEvent)}
+							className='flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500'
+							target='_blank'
+							rel='noopener noreferrer'
+						>
+							<Avatar>
+								<AvatarImage
+									src={builder.picture}
+									alt={builder.name}
+								/>
+								<AvatarFallback className='rounded-lg'>
+									{builder.name?.substring(0, 2)}
+								</AvatarFallback>
+							</Avatar>
+							<span>{builder.name}</span>
+						</a>
+					</div>
+				)}
+				<Separator orientation='vertical' className='!h-[inherit]' />
+				{launcher && launchEvent && (
+					<div className='flex flex-col gap-2'>
+						<span className='text-xs font-semibold uppercase'>
+							Launched by:
+						</span>
+						<a
+							href={getNpubLink(launchEvent)}
+							className='flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500'
+							target='_blank'
+							rel='noopener noreferrer'
+						>
+							<Avatar>
+								<AvatarImage
+									src={launcher.picture}
+									alt={launcher.name}
+								/>
+								<AvatarFallback className='rounded-lg'>
+									{launcher.name?.substring(0, 2)}
+								</AvatarFallback>
+							</Avatar>
+							<span>{launcher.name}</span>
+						</a>
+					</div>
+				)}
+			</div>
+		</InstanceCardWrapper>
 	)
 }
 
