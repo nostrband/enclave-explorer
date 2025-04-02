@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import InstanceCard from './components/InstanceCard'
 import { fetchInstances } from '@/lib/nostr'
-import { Instance } from './types'
+import { Instance } from '../../lib/types'
 import LoadingSpinner from '@/components/LoadingSpinner'
 
 export default function InstancesPage() {

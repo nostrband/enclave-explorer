@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Instance } from '../types'
+import { Instance } from '../../../lib/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -23,7 +23,7 @@ const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
             <p className="text-muted-foreground text-sm break-words">
                PUBKEY:{' '}
                <a
-                  href={getNeventLink(event)}
+                  href={getNeventLink(event.id)}
                   className="inline-block hover:underline hover:text-blue-500"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -38,7 +38,7 @@ const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
                <div className="flex flex-col gap-2">
                   <span className="text-xs font-semibold uppercase">Build by:</span>
                   <a
-                     href={getNpubLink(buildEvent)}
+                     href={getNpubLink(buildEvent.pubkey)}
                      className="flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500"
                      target="_blank"
                      rel="noopener noreferrer"
@@ -56,7 +56,7 @@ const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
                <div className="flex flex-col gap-2">
                   <span className="text-xs font-semibold uppercase">Launched by:</span>
                   <a
-                     href={getNpubLink(launchEvent)}
+                     href={getNpubLink(launchEvent.pubkey)}
                      className="flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500"
                      target="_blank"
                      rel="noopener noreferrer"

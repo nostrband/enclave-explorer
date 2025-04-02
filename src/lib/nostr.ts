@@ -1,6 +1,7 @@
-import { Instance } from '@/pages/Instances/types'
+import { Instance } from '@/lib/types'
 import { Event, Relay } from 'nostr-tools'
 import { validateInstance } from 'nostr-enclaves'
+import { hexToBytes } from '@noble/hashes/utils'
 
 const relay = new Relay('wss://relay.nostr.band/all')
 
@@ -17,10 +18,20 @@ export function tvl(e: Event, name: string, label: string) {
 }
 
 async function parseInstanceEvent(e: Event) {
+   let valid = false
    try {
       await validateInstance(e)
+      valid = true
+   } catch {}
+
+   try {
+      const prod = e.tags.find((t) => t.length > 1 && t[0] === 't' && t[1] === 'prod')
+      const dev = e.tags.find((t) => t.length > 1 && t[0] === 't' && t[1] === 'dev')
+      const debug = !hexToBytes(tvl(e, 'x', 'PCR0')!).find((c) => c !== 0)
+      const type = debug ? 'debug' : prod && !dev ? 'prod' : 'dev'
 
       const i: Instance = {
+         valid,
          event: e,
          name: tv(e, 'name'),
          version: tv(e, 'v'),
@@ -30,6 +41,8 @@ async function parseInstanceEvent(e: Event) {
          PCR2: tvl(e, 'x', 'PCR2') || '',
          PCR4: tvl(e, 'x', 'PCR4'),
          PCR8: tvl(e, 'x', 'PCR8'),
+         type,
+         relays: e.tags.filter((t) => t.length > 1 && t[0] === 'relay').map((t) => t[1]),
          expiration: Number(tv(e, 'expiration') || '0'),
          instance: {
             event: JSON.parse(tv(e, 'instance') || 'undefined'),
@@ -38,6 +51,9 @@ async function parseInstanceEvent(e: Event) {
             event: JSON.parse(tv(e, 'build') || 'undefined'),
          },
       }
+
+      if (i.instance.event) i.instance.PCR4 = tv(i.instance.event, 'PCR4')
+      if (i.build.event) i.build.PCR8 = tv(i.build.event, 'PCR8')
 
       return i
    } catch (err) {
