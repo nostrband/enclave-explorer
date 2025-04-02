@@ -13,7 +13,7 @@ export default function Header() {
                         <AppLogo />
                      </Link>
                   </div>
-                  <h1 className="text-2xl font-bold">Nsec.app Enclaves</h1>
+                  <h1 className="text-2xl font-bold">Nostr Enclaves</h1>
                </div>
             </div>
          </div>
