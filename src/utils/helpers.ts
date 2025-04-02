@@ -1,4 +1,4 @@
-import { Event, nip19 } from 'nostr-tools'
+import { nip19 } from 'nostr-tools'
 
 export const getNpubLink = (pubkey: string) => {
    const npub = nip19.npubEncode(pubkey)
