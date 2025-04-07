@@ -12,6 +12,7 @@ import { getNeventLink, getNpubLink } from '@/utils/helpers'
 import { Instance } from '../../lib/types'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { X509Certificate } from '@peculiar/x509'
+import { nip19 } from 'nostr-tools'
 
 type Props = {
    id: string
@@ -26,7 +27,7 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
          try {
             setIsLoading(true)
             const instances = await fetchInstances()
-            const currentInstance = instances.find((i) => i.event.id === id)
+            const currentInstance = instances.find((i) => i.event.id === id || nip19.npubEncode(i.event.pubkey) === id)
             if (currentInstance) setCurrentInstance(currentInstance)
          } catch (error) {
             console.log(error)
