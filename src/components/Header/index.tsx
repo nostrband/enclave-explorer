@@ -1,6 +1,5 @@
-import React from 'react'
-import AppLogo from '@/assets/icons/logo.svg'
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
+import AppLogo from '@/assets/icons/logo.svg?react'
 
 export default function Header() {
    return (
@@ -9,7 +8,7 @@ export default function Header() {
             <div className="container flex h-14 items-center gap-2 md:gap-4 px-4">
                <div className="flex items-center gap-2.5">
                   <div className="h-[36px] w-[32px]">
-                     <Link href={'/'}>
+                     <Link to={'/'}>
                         <AppLogo />
                      </Link>
                   </div>

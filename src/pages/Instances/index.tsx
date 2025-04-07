@@ -1,6 +1,4 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import InstanceCard from './components/InstanceCard'
 import { fetchInstances } from '@/lib/nostr'
 import { Instance } from '../../lib/types'

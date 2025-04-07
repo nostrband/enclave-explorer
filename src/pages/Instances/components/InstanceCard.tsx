@@ -1,19 +1,27 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Instance } from '../../../lib/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import InstanceCardWrapper from './InstanceCardWrapper'
 import { getNeventLink, getNpubLink } from '@/utils/helpers'
+import { useNavigate } from 'react-router-dom'
 
 type Props = Instance
 
 const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
+   const navigate = useNavigate()
    const { launcher, event: launchEvent } = instance || {}
    const { builder, event: buildEvent } = build || {}
 
+   const handleInstanceClick = () => {
+      navigate('/instances/' + event.id)
+   }
+
    return (
-      <InstanceCardWrapper instanceId={event.id}>
+      <div
+         className="p-4 border rounded-xl hover:bg-gray-100 flex flex-col gap-4 cursor-pointer"
+         onClick={handleInstanceClick}
+      >
          <div className="flex flex-col gap-1 flex-11/12">
             <div className="flex gap-2 items-center">
                <h3 className="text-lg font-bold">{name}</h3>
@@ -70,7 +78,7 @@ const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
                </div>
             )}
          </div>
-      </InstanceCardWrapper>
+      </div>
    )
 }
 

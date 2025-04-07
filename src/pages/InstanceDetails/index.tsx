@@ -1,24 +1,19 @@
-'use client'
-
-import React, { FC, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { fetchInstances } from '@/lib/nostr'
-import Image from 'next/image'
 import { format } from 'date-fns'
 import { getNeventLink, getNpubLink } from '@/utils/helpers'
 import { Instance } from '../../lib/types'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { X509Certificate } from '@peculiar/x509'
 import { nip19 } from 'nostr-tools'
+import { Link, useParams } from 'react-router-dom'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
-type Props = {
-   id: string
-}
-
-const InstanceDetailsPage: FC<Props> = ({ id }) => {
+const InstanceDetailsPage = () => {
+   const { id = '' } = useParams<{ id: string }>()
    const [isLoading, setIsLoading] = useState(true)
    const [currentInstance, setCurrentInstance] = useState<Instance | null>(null)
 
@@ -47,7 +42,7 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
          <div className="container flex flex-col gap-3 mx-auto py-4 items-center">
             <p className="text-2xl font-semibold text-center">Instance not found</p>
             <Button variant={'outline'}>
-               <Link href={'/instances'}>Return to Instances</Link>
+               <Link to={'/instances'}>Return to Instances</Link>
             </Button>
          </div>
       )
@@ -123,13 +118,10 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                      >
-                        <Image
-                           src={launcher.picture}
-                           alt={launcher.name}
-                           width={32}
-                           height={32}
-                           className="rounded-full"
-                        />
+                        <Avatar>
+                           <AvatarImage src={launcher.picture} alt={launcher.name} />
+                           <AvatarFallback className="rounded-lg">{launcher.name?.substring(0, 2)}</AvatarFallback>
+                        </Avatar>
                         <span className="text-sm">{launcher.name}</span>
                      </a>
                   </div>
@@ -163,13 +155,10 @@ const InstanceDetailsPage: FC<Props> = ({ id }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                      >
-                        <Image
-                           src={builder.picture}
-                           alt={builder.name}
-                           width={32}
-                           height={32}
-                           className="rounded-full"
-                        />
+                        <Avatar>
+                           <AvatarImage src={builder.picture} alt={builder.name} />
+                           <AvatarFallback className="rounded-lg">{builder.name?.substring(0, 2)}</AvatarFallback>
+                        </Avatar>
                         <span className="text-sm">{builder.name}</span>
                      </a>
                   </div>
