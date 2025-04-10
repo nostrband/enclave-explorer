@@ -10,6 +10,8 @@ export default function AppRoutes() {
             <Route index element={<Navigate to={'/instances'} />} />
             <Route path="instances" element={<InstancesPage />} />
             <Route path="instances/:id" element={<InstanceDetailsPage />} />
+            {/* FIXME remove later when noauth-enclaved starts publishing proper links */}
+            <Route path="instance/:id" element={<InstanceDetailsPage />} />
          </Route>
       </Routes>
    )
