@@ -52,7 +52,7 @@ const InstanceDetailsPage = () => {
    const { builder, event: buildEvent, PCR8: buildPCR8 } = currentInstance.build || {}
 
    const certBase64 = buildEvent?.tags.find((t) => t.length > 1 && t[0] === 'cert')?.[1] || ''
-   const cert = new X509Certificate(certBase64)
+   const cert = certBase64 ? new X509Certificate(certBase64) : undefined
 
    const eventCreatedAt = format(currentInstance.event!.created_at * 1000, 'yyyy/MM/dd, hh:mm:ss a')
 
@@ -129,42 +129,44 @@ const InstanceDetailsPage = () => {
             )}
          </Card>
 
-         <Card>
-            <CardHeader>
-               <CardTitle>Build Info</CardTitle>
-               {/* <CardDescription>Details about the enclave build</CardDescription> */}
-            </CardHeader>
-            <CardContent>
-               <CardDescription>
-                  <div className="flex flex-col gap-2">
-                     <p className="break-all">Created at: {buildCreatedAt}</p>
-                     <p className="break-all">PCR8: {buildPCR8}</p>
-                     <p className="break-all">Certificate subject: {cert.subject}</p>
-                     <p className="break-all">Certificate base64: {certBase64}</p>
-                  </div>
-               </CardDescription>
-            </CardContent>
-            <CardContent>
-               {builder && buildEvent && (
-                  <div className="flex flex-col gap-2">
-                     <span>Build by:</span>
+         {cert && (
+            <Card>
+               <CardHeader>
+                  <CardTitle>Build Info</CardTitle>
+                  {/* <CardDescription>Details about the enclave build</CardDescription> */}
+               </CardHeader>
+               <CardContent>
+                  <CardDescription>
+                     <div className="flex flex-col gap-2">
+                        <p className="break-all">Created at: {buildCreatedAt}</p>
+                        <p className="break-all">PCR8: {buildPCR8}</p>
+                        <p className="break-all">Certificate subject: {cert.subject}</p>
+                        <p className="break-all">Certificate base64: {certBase64}</p>
+                     </div>
+                  </CardDescription>
+               </CardContent>
+               <CardContent>
+                  {builder && buildEvent && (
+                     <div className="flex flex-col gap-2">
+                        <span>Build by:</span>
 
-                     <a
-                        href={getNpubLink(buildEvent.pubkey)}
-                        className="flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                     >
-                        <Avatar>
-                           <AvatarImage src={builder.picture} alt={builder.name} />
-                           <AvatarFallback className="rounded-lg">{builder.name?.substring(0, 2)}</AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm">{builder.name}</span>
-                     </a>
-                  </div>
-               )}
-            </CardContent>
-         </Card>
+                        <a
+                           href={getNpubLink(buildEvent.pubkey)}
+                           className="flex items-center gap-2 text-gray-700 hover:underline hover:text-blue-500"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                        >
+                           <Avatar>
+                              <AvatarImage src={builder.picture} alt={builder.name} />
+                              <AvatarFallback className="rounded-lg">{builder.name?.substring(0, 2)}</AvatarFallback>
+                           </Avatar>
+                           <span className="text-sm">{builder.name}</span>
+                        </a>
+                     </div>
+                  )}
+               </CardContent>
+            </Card>
+         )}
 
          <Card>
             <CardHeader>

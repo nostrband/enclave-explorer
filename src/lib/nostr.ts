@@ -1,6 +1,6 @@
 import { Instance } from '@/lib/types'
 import { Event, Relay } from 'nostr-tools'
-import { validateInstance } from 'nostr-enclaves'
+import { Validator } from 'nostr-enclaves'
 import { hexToBytes } from '@noble/hashes/utils'
 
 const relay = new Relay('wss://relay.nostr.band/all')
@@ -20,7 +20,7 @@ export function tvl(e: Event, name: string, label: string) {
 async function parseInstanceEvent(e: Event) {
    let valid = false
    try {
-      await validateInstance(e)
+      await new Validator().validateInstance(e)
       valid = true
    } catch {}
 
@@ -45,10 +45,10 @@ async function parseInstanceEvent(e: Event) {
          relays: e.tags.filter((t) => t.length > 1 && t[0] === 'relay').map((t) => t[1]),
          expiration: Number(tv(e, 'expiration') || '0'),
          instance: {
-            event: JSON.parse(tv(e, 'instance') || 'undefined'),
+            event: JSON.parse(tv(e, 'instance') || 'null'),
          },
          build: {
-            event: JSON.parse(tv(e, 'build') || 'undefined'),
+            event: JSON.parse(tv(e, 'build') || 'null'),
          },
       }
 
