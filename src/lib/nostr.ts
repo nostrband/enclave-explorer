@@ -29,10 +29,12 @@ async function parseInstanceEvent(e: Event) {
       const dev = e.tags.find((t) => t.length > 1 && t[0] === 't' && t[1] === 'dev')
       const debug = !hexToBytes(tvl(e, 'x', 'PCR0')!).find((c) => c !== 0)
       const type = debug ? 'debug' : prod && !dev ? 'prod' : 'dev'
+      const open = !!e.tags.find((t) => t.length > 1 && t[0] === 'o' && t[1] === 'true')
 
       const i: Instance = {
          valid,
          event: e,
+         open,
          name: tv(e, 'name'),
          version: tv(e, 'v'),
          sourceRef: tv(e, 'r'),

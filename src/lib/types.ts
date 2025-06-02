@@ -10,6 +10,7 @@ export type Profile = {
 export type Instance = {
    event: Event
    valid: boolean
+   open: boolean
    name?: string
    version?: string
    sourceRef?: string

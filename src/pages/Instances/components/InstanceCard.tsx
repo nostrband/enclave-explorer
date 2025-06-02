@@ -15,7 +15,7 @@ const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
    const { builder, event: buildEvent } = build || {}
 
    const handleInstanceClick = () => {
-      navigate('/instances/' + nip19.npubEncode(event.id))
+      navigate('/instances/' + nip19.npubEncode(event.pubkey))
    }
 
    return (
