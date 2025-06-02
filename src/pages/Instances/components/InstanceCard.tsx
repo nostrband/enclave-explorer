@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { getNeventLink, getNpubLink } from '@/utils/helpers'
 import { useNavigate } from 'react-router-dom'
+import { nip19 } from 'nostr-tools'
 
 type Props = Instance
 
@@ -14,7 +15,7 @@ const InstanceCard: FC<Props> = ({ instance, event, name, version, build }) => {
    const { builder, event: buildEvent } = build || {}
 
    const handleInstanceClick = () => {
-      navigate('/instances/' + event.id)
+      navigate('/instances/' + nip19.npubEncode(event.id))
    }
 
    return (
