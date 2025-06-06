@@ -5,6 +5,9 @@ import { hexToBytes } from '@noble/hashes/utils'
 
 const relay = new Relay('wss://relay.nostr.band/all')
 
+const KIND_ANNOUNCEMENT = 13793;
+const KIND_ANNOUNCEMENT_OLD = 63793;
+
 function now() {
    return Math.floor(Date.now() / 1000)
 }
@@ -109,7 +112,7 @@ export async function fetchInstances() {
       const sub = relay.subscribe(
          [
             {
-               kinds: [63793],
+               kinds: [KIND_ANNOUNCEMENT, KIND_ANNOUNCEMENT_OLD],
                since: now() - 3 * 3600,
             },
          ],
